@@ -139,3 +139,48 @@ select gender,avg(age) from emp group by gender ;
 
 #3. 查询年龄小于 45 的员工, 并根据工作地址分组,获取员工数量大于等于3的工作地址
 select workaddress,count(*) address_count from emp where age < 45 group by workaddress having address_count >= 3;
+
+
+-- ----------------------- 排序查询 -------------
+#1. 语法 : select 字段列表 from 表名 order by 字段1 排序方式1,字段2 排序方式2;
+#2. 排序方式: ASC: 升序(默认) ; DESC: 降序
+#注意: 如果是多字段排序,当第一个字段值相同时,才会根据第二个字段进行排序.
+
+#1. 根据年龄对公司员工进行升序排序
+select * from emp order by age asc;
+select * from emp order by age;
+
+#2.根据入职时间,对公司员工进行降序排序
+select * from emp order by entrydate desc;
+
+#3.根据年龄对公司员工进行升序排序,年龄相同,再按照入职时间对公司员工进行降序排序.
+select * from emp order by age asc , entrydate desc;
+
+-- ----------------------- 分页查询 -------------
+#1. 语法 : select 字段列表 from 表名 limit 起始索引,查询记录数;
+#注意:    起始索引从0开始, 起始索引= (查询页码-1) * 每页显示记录数.
+#        分页查询是数据库的方言,不同的数据库有不同的实现,MySQL中是LIMIT.
+#        如果查询的是第一页数据,起始索引可以省略,直接简写成 limit 10.
+
+#1. 查询第1页员工数据,每页展示10条记录.
+select * from emp limit 0,10;
+select * from emp limit 10;
+
+#2. 查询第2页员工数据,每页显示10条记录.
+select * from emp limit 10,10;
+
+                                            --  案例练习 --
+# 1．查询年龄为20,21,22,23岁的女性员工信息。
+select * from emp where gender='女' and age in(20,21,22,23);
+
+# 2．查询性别为男,并且年龄在20-40岁(含)以内的姓名为三个字的员工。
+select * from emp where gender='男' and (age between 20 and 40) and name like '___';
+
+# 3．统计员工表中,年龄小于60岁的，男性员工和女性员工的人数。
+select gender, count(*) from emp where age < 60 group by gender;
+
+# 4.查询所有年龄小于等于35岁员工的姓名和年龄，并对查询结果按年龄升序排序，如果年龄相同按入职时间降序排序。
+select name , age from emp where age <= 35 order by age asc,entrydate desc  ;
+
+# 5、查询性别为男，且年龄在20-40岁(含)以内的前5个员工信息，对查询的结果按年龄升序排序，年龄相同按入职时间升序排序。
+select * from emp where gender='男' and (age between 20 and 40) order by age asc,entrydate asc limit 0 , 5;
