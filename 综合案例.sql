@@ -1,13 +1,10 @@
--- 判断数据库是否存在
 
-IF EXISTS(SELECT * FROM sys.databases WHERE name='StudentDB')
-
---删除数据库
-
+use master
+IF EXISTS(SELECT * FROM sys.databases WHERE name='Student')
 DROP DATABASE StudentDB
-GO
 
 CREATE DATABASE StudentDB -- 创建数据库
+
 ON PRIMARY  -- 定义在主文件组上的文件
 (
 	NAME=stu_date, -- 逻辑名称
@@ -24,8 +21,7 @@ ON PRIMARY  -- 定义在主文件组上的文件
 	FILEGROWTH=1
 )
 
-use StudentDB
-go
+use StudentDB;
 -- 创建 系别表 Department 记录
 create table Department(
 	Departid int primary key,
@@ -40,6 +36,11 @@ create table Class(
 	Departid int NOT NULL,
 	FOREIGN KEY (Departid) REFERENCES Department(Departid)
 );
+
+-- 修改
+ALTER TABLE StudentDB.dbo.Class
+ALTER COLUMN Specialty VARCHAR(30);	
+
 
 -- 创建 学生表 Student 记录
 create table Student (
@@ -56,6 +57,17 @@ create table Student (
 	Memo varchar(100),
 	FOREIGN KEY (Classid) REFERENCES Class(Classid)
 );
+
+-- 修改
+ALTER TABLE StudentDB.dbo.Student
+ALTER COLUMN Postalcode varchar(10);
+
+ALTER TABLE StudentDB.dbo.Student
+ALTER COLUMN Tel varchar(20);
+
+ALTER TABLE Student
+ADD Birthday DATE NOT NULL;
+
 
 -- 创建课程表 Course 记录
 create table Course (
@@ -91,18 +103,6 @@ insert into Class (Classid, Classname, Specialty, Departid) VALUES
 (20801,'电子200801','机电一体化',2),
 (20802,'电子200802','机电一体化',2);
 
-ALTER TABLE StudentDB.dbo.Class	-- 定义短了
-ALTER COLUMN Specialty VARCHAR(30);	
-
-ALTER TABLE StudentDB.dbo.Student
-ALTER COLUMN Postalcode varchar(10);
-
-ALTER TABLE StudentDB.dbo.Student
-ALTER COLUMN Tel varchar(20);
-
--- 忘记了 Birthday 列
-ALTER TABLE Student
-ADD Birthday DATE NOT NULL;
 
 
 -- 向 Student 表导入数据
@@ -189,6 +189,9 @@ insert into Score (Studentid,Courseid,Score) VALUES
 (20702001,200202,87),
 (20702002,200202,75),
 (20702003,200202,97);
+
+
+
 
 
 							-- 实现 --
