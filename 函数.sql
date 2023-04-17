@@ -75,3 +75,44 @@ select datediff('2023-4-17','2022-4-17');
 -- 需求 : 查询所有员工的入职天数,并根据入职天数倒序排序.
 select name,datediff(curdate(),entrydate) as 'entrydays' from emp order by entrydays desc;
 -- 时间相减函数datediff( 当前时间函数curdate - 列表名 entrydate) desc降序
+
+
+-- 4.流程函数
+-- if(判断是否为 true ,为 true 返回 ok ,不是返回 Error)
+select if(true,'ok','Error');
+
+-- ifnull(判断非空,非空返回 ok ,空则返回后面的 default)
+select ifnull('ok','default');
+
+select ifnull('','default');  -- 字符串 空,返回空字符串
+
+select ifnull(null ,'default');  -- 返回 null
+
+-- case when then else end
+-- 需求:查询 emp 表的员工姓名合工作地址(如果是北京或者上海返回 ---> 一线城市 ,其他返回 ---> 二线城市 )
+select
+       name,
+       ( case workaddress when '北京' then '一线城市' when '上海' then '一线城市' else '二线城市' end ) as '工作地址'
+from emp;
+
+-- 需求:统计班级各个学员的成绩, 展示的规则如下:
+-- >=85,展示优秀,
+-- >=60,展示及格,
+-- 其他,展示不及格.
+                    -- 创建成绩表
+create table score (
+    id int comment 'ID',
+    name varchar(20) comment '姓名',
+    math int comment '数学',
+      english int comment '英语',
+    chinese int comment '语文'
+) comment '学员成绩表';
+insert into score(id, name, math, english, chinese) VALUES (1,'Tom',67,88,95),(2,'Rose',23,66,90),(3,'Jack',56,98,76);
+
+--
+select
+    id,name,
+        (case when math >=80 then '优秀' when math >= 60 then '及格' else '不及格' end) '数学',
+        (case when english >=80 then '优秀' when english >= 60 then '及格' else '不及格' end) '英语',
+        (case when chinese >=80 then '优秀' when chinese >= 60 then '及格' else '不及格' end) '语文'
+from score;
