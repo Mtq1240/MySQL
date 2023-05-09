@@ -123,5 +123,43 @@ select * from emp,dept where emp.dept_id = dept.id ;
 -- 表结构: emp , dept
 -- 连接条件: emp.dept_id = dept.id
 select emp.name , dept.name from emp , dept where emp.dept_id = dept.id ;
-
+# 给表起别名,不能再通过表名来限定字段
 select e.name,d.name from emp e , dept d where e.dept_id = d.id;
+
+
+-- 2. 查询每一个员工的姓名 , 及关联的部门的名称 (显式内连接实现)  --- INNER JOIN ... ON ... (inner 可以省略)
+-- 表结构: emp , dept
+-- 连接条件: emp.dept_id = dept.id
+
+select e.name, d.name from emp e inner join dept d  on e.dept_id = d.id;
+
+select e.name, d.name from emp e join dept d  on e.dept_id = d.id;
+
+
+
+
+-- 外连接演示
+-- 1. 查询emp表的所有数据, 和对应的部门信息(左外连接) (会完全的显示左表内容以及和右表交集的查询内容)
+-- 表结构: emp, dept
+-- 连接条件: emp.dept_id = dept.id
+select e.*,d.name from emp e left outer join dept d on e.dept_id = d.id;
+
+select e.*, d.name from emp e left join dept d on e.dept_id = d.id;
+
+-- 2. 查询dept表的所有数据, 和对应的员工信息(右外连接) (会完全的显示右表内容以及和左表交集的查询内容)
+select d.*, e.* from emp e right outer join dept d on e.dept_id = d.id;
+# 如果改成左外连接,只需调换一下左右表的顺序即可
+select d.*, e.* from dept d left outer join emp e on e.dept_id = d.id;
+
+
+
+-- 自连接
+-- 1. 查询员工 及其 所属领导的名字
+-- 表结构: emp  (必须起别名 可以理解为使用内连接查询表交集部分的数据)
+
+select a.name,b.name from emp a , emp b where a.managerid = b.id;
+
+-- 2. 查询所有员工 emp 及其领导的名字 emp , 如果员工没有领导, 也需要查询出来
+-- 表结构: emp a , emp b  (没有领导也要查询出来,可以理解为使用外连接查询完整的表)
+
+select a.name '员工',b.name '领导' from emp a left outer join emp b on a.managerid = b.id;
