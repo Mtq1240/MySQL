@@ -163,3 +163,87 @@ select a.name,b.name from emp a , emp b where a.managerid = b.id;
 -- 表结构: emp a , emp b  (没有领导也要查询出来,可以理解为使用外连接查询完整的表)
 
 select a.name '员工',b.name '领导' from emp a left outer join emp b on a.managerid = b.id;
+
+
+
+-- union all , union
+-- 1. 将薪资低于 5000 的员工 , 和 年龄大于 50 岁的员工全部查询出来.
+
+-- 直接将查询的两个结果合并
+select * from emp where salary < 5000
+union all
+select * from emp where age > 50;
+
+-- 去除重复数据 可以删去关键字 all
+select * from emp where salary < 5000
+union
+select * from emp where age > 50;
+
+
+
+-- -------------------------------------- 子查询 ------------------------
+
+-- 标量子查询
+-- 1. 查询 "销售部" 的所有员工信息
+-- 第一步. 查询 "销售部" 部门ID
+select id from dept where name = '销售部';
+
+-- 第二步. 查询部门 id 为 4 查询员工信息
+select * from emp where dept_id = 4;
+
+-- 第三步. 合并
+select * from emp where dept_id = (select id from dept where name = '销售部');
+
+
+-- 2. 查询在 "方东白" 入职之后的员工信息
+-- 第一步. 查询 方东白 的入职日期
+select entrydate from emp where name= '方东白';
+
+-- 第二步. 查询他之后的员工信息
+select * from emp where entrydate > '2009-02-12';
+
+-- 第三步. 合并
+select * from emp where entrydate > (select entrydate from emp where name= '方东白');
+
+
+-- 列子查询
+-- 1. 查询 "销售部" 和 "市场部" 的所有员工信息
+-- a. 查询 "销售部" 和 "市场部" 的部门ID
+select id from dept where name = '销售部' or name = '市场部';
+
+-- b. 根据部门ID, 查询员工信息 ( in: 在指定范围内查找 )
+select * from emp where dept_id in (2,4);
+
+-- c. 合并
+select * from emp where dept_id in (select id from dept where name = '销售部' or name = '市场部');
+
+-- 2. 查询比 财务部 所有人工资都高的员工信息
+-- a. 查询所有 财务部 人员工资
+select id from dept where name = '财务部';
+
+select salary from emp where dept_id = (select id from dept where name = '财务部');
+
+-- b. 比 财务部 所有人工资都高的员工信息 (高于财务部最高工资的人, all : 查询返回的列表都需要满足条件)
+select * from emp where salary > all (select salary from emp where dept_id = (select id from dept where name = '财务部'));
+
+
+-- 3. 查询比研发部其中任意一人工资高的员工信息
+-- a. 查询研发部所有人工资
+select id from dept where name = '研发部';
+
+select salary from emp where dept_id = (select id from dept where name = '研发部');
+
+-- b. 比研发部其中任意一人工资高的员工信息 ( any/some : 查询满足其中的任意一个条件)
+select * from emp where salary > any (select salary from emp where dept_id = (select id from dept where name = '研发部'));
+
+
+
+-- 行子查询
+-- 1. 查询与 "张无忌" 的薪资及直属领导相同的员工信息 ;
+-- a. 查询 "张无忌" 的薪资及直属领导
+select salary,managerid from emp where name = '张无忌';
+
+-- b. 查询与 "张无忌" 的薪资及直属领导相同的员工信息 ;
+select * from emp where (salary,managerid) = (select salary,managerid from emp where name = '张无忌');
+
+
