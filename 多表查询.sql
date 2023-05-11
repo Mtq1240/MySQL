@@ -247,3 +247,57 @@ select salary,managerid from emp where name = '张无忌';
 select * from emp where (salary,managerid) = (select salary,managerid from emp where name = '张无忌');
 
 
+-- 表子查询
+-- 1. 查询与 "鹿杖客" , "宋远桥" 的职位和薪资相同的员工信息
+-- a. 查询 "鹿杖客" , "宋远桥" 的职位和薪资
+select job,salary from emp where name='鹿杖客' or name='宋远桥';
+
+-- b. 查询与 "鹿杖客" , "宋远桥" 的职位和薪资相同的员工信息
+select * from emp where (job,salary) in (select job,salary from emp where name='鹿杖客' or name='宋远桥');
+
+-- 2. 查询入职日期是 "2006-01-01" 之后的员工信息 , 及其部门信息
+-- a. 入职日期是 "2006-01-01" 之后的员工信息
+select * from emp where entrydate > '2006-01-01';
+
+-- b. 查询这部分员工, 对应的部门信息;
+select e.*,d.* from (select * from emp where entrydate > '2006-01-01') e left join dept d on e.dept_id = d.id;
+
+
+
+
+-- ---------------------------------------> 多表查询案例 <----------------------------------
+create table salgrade(
+    grade int,
+    losal int,
+    hisal int
+) comment '薪资等级表';
+
+insert into salgrade values (1,0,3000);
+insert into salgrade values (2,3001,5000);
+insert into salgrade values (3,5001,8000);
+insert into salgrade values (4,8001,10000);
+insert into salgrade values (5,10001,15000);
+insert into salgrade values (6,15001,20000);
+insert into salgrade values (7,20001,25000);
+insert into salgrade values (8,25001,30000);
+
+-- 1. 查询员工的姓名、年龄、职位、部门信息 （隐式内连接）
+-- 表: emp , dept
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
